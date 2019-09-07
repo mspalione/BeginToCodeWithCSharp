@@ -27,6 +27,10 @@ public class Countdown
         SnapsEngine.SpeakString("One");
         SnapsEngine.DisplayString("Zero");
         SnapsEngine.SpeakString("Zero");
+
+        SnapsEngine.SpeakString("Tick");
+        SnapsEngine.Delay(.5);
+        SnapsEngine.SpeakString("Tock");
     }
 }
 
