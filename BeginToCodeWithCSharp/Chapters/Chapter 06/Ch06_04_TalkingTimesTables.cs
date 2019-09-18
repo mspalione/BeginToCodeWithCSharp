@@ -8,7 +8,7 @@ class Ch06_04_TalkingTimesTables
 
         int count = 1;
 
-        int timesValue = 2;
+        int timesValue = SnapsEngine.ReadInteger("What number do you want to multiuply the numbers 1 through 12 by?");
 
         while (count < 13)
         {
