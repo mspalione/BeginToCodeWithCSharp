@@ -249,6 +249,7 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="My Snaps apps\FortuneTeller.cs" />
+    <Compile Include="My Snaps apps\PartyGuests.cs" />
     <Compile Include="My Snaps apps\TimeToGetUp.cs" />
     <Compile Include="My Snaps apps\Countdown.cs" />
     <Compile Include="My Snaps apps\MyProgram.cs" />
