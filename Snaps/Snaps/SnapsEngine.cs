@@ -649,6 +649,12 @@ namespace SnapsLibrary
             return manager.FetchStringFromLocalStorage(itemName);
         }
 
+
+        public static string EditStringToLocalStorage(string itemName, string itemValue)
+        {
+            return manager.EditStringToLocalStorage(itemName, itemValue);
+        }
+
         /// <summary>
         /// Save a string in roaming application storage with a particular name
         /// </summary>

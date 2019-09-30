@@ -1,4 +1,5 @@
-﻿using SnapsLibrary;
+﻿using System;
+using SnapsLibrary;
 
 class Ch08_08_TinyContactBookLocalStore
 {
@@ -33,6 +34,37 @@ class Ch08_08_TinyContactBookLocalStore
         return true;
     }
 
+
+    void EditContact()
+    {
+        SnapsEngine.DisplayString("Edit the contact");
+
+        string name = SnapsEngine.ReadString("Enter edited contact name");
+        string address = SnapsEngine.ReadMultiLineString("Enter edited address");
+        string phone = SnapsEngine.ReadString("Enter edited phone");
+
+        StoreEditedContact(name: name, address: address, phone: phone);
+
+        SnapsEngine.AddLineToTextDisplay("Name: " + name);
+        SnapsEngine.AddLineToTextDisplay("Address: " + address);
+        SnapsEngine.AddLineToTextDisplay("Phone: " + phone);
+
+        SnapsEngine.WaitForButton("Continue");
+        // Clear the display
+        SnapsEngine.ClearTextDisplay();
+    }
+
+    void StoreEditedContact(string name, string address, string phone)
+    {
+        name = TidyInput(name);
+
+        SnapsEngine.EditStringToLocalStorage(itemName: name + ":address",
+                                            itemValue: address);
+        SnapsEngine.EditStringToLocalStorage(itemName: name + ":phone",
+                                            itemValue: phone);
+    }
+ 
+
     /// <summary>
     /// Stores a contact in local store
     /// </summary>
@@ -47,6 +79,44 @@ class Ch08_08_TinyContactBookLocalStore
                                             itemValue: address);
         SnapsEngine.SaveStringToLocalStorage(itemName: name + ":phone",
                                             itemValue: phone);
+    }
+
+    // Create User ID and PW
+    void NewUser()
+    {
+        SnapsEngine.DisplayString("Create user name and password");
+        string name = SnapsEngine.ReadString("Enter your name");
+        string password = SnapsEngine.ReadString("Create a password");
+
+        name = TidyInput(name);
+
+        SnapsEngine.SaveStringToLocalStorage(itemName: name + ":password",
+                                            itemValue: password);
+
+        ContactSearch();
+    }
+
+    // Sign in checks for password accuracy
+    void SignIn()
+    {
+        string userName = SnapsEngine.ReadString("Please enter your name");
+        string userPassword = SnapsEngine.ReadString("Please enter your password.");
+
+        userName = TidyInput(userName);
+
+        string password = SnapsEngine.FetchStringFromLocalStorage(itemName: userName + ":password");
+
+        if (userPassword == password)
+        {
+            ContactSearch();
+        }
+        else
+        {
+            SnapsEngine.DisplayString("That password is incorrect.");
+            SnapsEngine.WaitForButton("Try Again?");
+            // Clear the display
+            SnapsEngine.ClearTextDisplay();
+        }
     }
 
     /// <summary>
@@ -64,36 +134,63 @@ class Ch08_08_TinyContactBookLocalStore
     /// <summary>
     /// Asks the user for a contact name and displays it
     /// </summary>
-void FindContact()
-{
-    // Get the name of the contact to search for
-    string name = SnapsEngine.ReadString("Enter contact name");
-
-    // Variables to hold the names address being fetched
-    string contactAddress, contactPhone;
-
-    if (FetchContact(name: name, address: out contactAddress, phone: out contactPhone))
+    void FindContact()
     {
-        // Got the contact details - display them
+        // Get the name of the contact to search for
+        string name = SnapsEngine.ReadString("Enter contact name");
+
+        // Variables to hold the names address being fetched
+        string contactAddress, contactPhone;
+
+        if (FetchContact(name: name, address: out contactAddress, phone: out contactPhone))
+        {
+            // Got the contact details - display them
+            SnapsEngine.ClearTextDisplay();
+            
+            SnapsEngine.AddLineToTextDisplay("Name: " + name);
+            SnapsEngine.AddLineToTextDisplay("Address: " + contactAddress);
+            SnapsEngine.AddLineToTextDisplay("Phone: " + contactPhone);
+
+        }
+        else
+        {
+            // Tell the user the name was not found
+            SnapsEngine.DisplayString("Name not found");
+            ContactSearch();
+        }
+
+        // Give the user a chance to view the details
+        SnapsEngine.WaitForButton("Continue");
+
+        // Clear the display
         SnapsEngine.ClearTextDisplay();
 
-        SnapsEngine.AddLineToTextDisplay("Name: " + name);
-        SnapsEngine.AddLineToTextDisplay("Address: " + contactAddress);
-        SnapsEngine.AddLineToTextDisplay("Phone: " + contactPhone);
-
+        // Continue searching
+        ContactSearch();
     }
-    else
+
+    /// <summary>
+    /// Create a new contact, search for existing contacts, or edit an existing contact
+    /// </summary>
+    void ContactSearch()
     {
-        // Tell the user the name was not found
-        SnapsEngine.DisplayString("Name not found");
+        string command = SnapsEngine.SelectFrom3Buttons("New Contact", "Find Contact", "Edit Contact");
+
+        if (command == "New Contact")
+        {
+            NewContact();
+        }
+
+        if (command == "Find Contact")
+        {
+            FindContact();
+        }
+
+        if (command == "Edit Contact")
+        {
+            EditContact();
+        }
     }
-
-    // Give the user a chance to view the details
-    SnapsEngine.WaitForButton("Continue");
-
-    // Clear the display
-    SnapsEngine.ClearTextDisplay();
-}
 
     /// <summary>
     /// Program entry point
@@ -104,17 +201,19 @@ void FindContact()
         {
             SnapsEngine.SetTitleString("Tiny Contacts");
 
-            string command = SnapsEngine.SelectFrom2Buttons("New Contact", "Find Contact");
+            string signIn = SnapsEngine.SelectFrom2Buttons("Create Account", "Sign In");
 
-            if (command == "New Contact")
+            if (signIn == "Create Account")
             {
-                NewContact();
+                NewUser();
             }
 
-            if (command == "Find Contact")
+            if (signIn == "Sign In")
             {
-                FindContact();
+                SignIn();
             }
         }
     }
+
+   
 }

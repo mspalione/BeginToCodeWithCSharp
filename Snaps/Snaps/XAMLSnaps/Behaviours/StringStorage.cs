@@ -52,6 +52,16 @@ namespace XAMLSnaps
             return null;
         }
 
+        public string EditStringToLocalStorage(string itemName, string itemValue)
+        {
+            itemName = itemName.ToLower();
+            Windows.Storage.ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            FetchStringFromLocalStorage(itemName);
+            localSettings.Values.Remove("itemName");
+            SaveStringToLocalStorage(itemName, itemValue);
+            return null; 
+        }
+
         public void SaveStringToRoamingStorage(string itemName, string itemValue)
         {
             Windows.Storage.ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;

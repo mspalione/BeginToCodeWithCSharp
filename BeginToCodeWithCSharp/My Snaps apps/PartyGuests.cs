@@ -36,6 +36,9 @@ class PartyGuests
         {
             int displayCount = count + 1;
             SnapsEngine.AddLineToTextDisplay("Guest Number " + displayCount + ": " + guests[count]);
+
         }
+
+        
     }
 }
