@@ -5,7 +5,7 @@ class Ch10_09_RSSTitles
 {
     public static void StartProgram()
     {
-        string rssText = SnapsEngine.GetWebPageAsString("http://www.robmiles.com/?format=rss");
+        string rssText = SnapsEngine.GetWebPageAsString("http://feeds.bbci.co.uk/news/rss.xml");
 
         XElement rssElements = XElement.Parse(rssText);
 

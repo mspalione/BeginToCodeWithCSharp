@@ -10,8 +10,10 @@ class Ch10_08_RSSReader
         XElement rssElements = XElement.Parse(rssText);
 
         string title = rssElements.Element("channel").Element("item").Element("title").Value;
+        string description = rssElements.Element("channel").Element("item").Element("title").Element("description").Value;
 
         SnapsEngine.SetTitleString("Headline from Rob");
         SnapsEngine.DisplayString(title);
+        SnapsEngine.DisplayString(description);
     }
 }

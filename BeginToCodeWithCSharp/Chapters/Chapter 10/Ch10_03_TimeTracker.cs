@@ -58,18 +58,37 @@ class Ch10_04_TimeTracker
     {
         SnapsEngine.SetTitleString("New Contact");
         string name = SnapsEngine.ReadString("Enter new contact name");
+        foreach (Contact contact in contacts)
+            while (contact.ContactName == name)
+            {
+                name = SnapsEngine.ReadString(name + " is already in your contact. \nPlease enter a unique name or use our 'Find Contact' option.");
+            }
+
         string address = SnapsEngine.ReadMultiLineString("Enter contact address");
         string phone = SnapsEngine.ReadString("Enter contact phone");
+        string confirm = SnapsEngine.SelectFrom2Buttons("Save Contact", "Cancel");
 
-        Contact newContact = new Contact(name: name, address: address, phone: phone);
-        if (storeContact(newContact))
+        switch (confirm)
         {
-            SnapsEngine.DisplayString("Contact stored");
+            case "Save Contact":
+                Contact newContact = new Contact(name: name, address: address, phone: phone);
+                if (storeContact(newContact))
+                {
+                    SnapsEngine.DisplayString("Contact stored");
+                    SnapsEngine.ClearTextDisplay();
+                }
+                else
+                {
+                    SnapsEngine.DisplayString("Storage failed");
+                }
+                break;
+
+            case "Cancel":
+                SnapsEngine.ClearTextDisplay();
+                break;
         }
-        else
-        {
-            SnapsEngine.DisplayString("Storage failed");
-        }
+
+        
     }
 
     void findContact()
@@ -105,31 +124,42 @@ class Ch10_04_TimeTracker
     void addMinutes()
     {
         SnapsEngine.SetTitleString("Add Minutes");
-
+        bool foundContact = false;
         string name = SnapsEngine.ReadString("Enter contact name");
-        int minutes = SnapsEngine.ReadInteger("Enter contact minutes");
-
-        bool foundAContact = false;
-
-        SnapsEngine.ClearTextDisplay();
-
-        for (int position = 0; position < contacts.Length; position = position + 1)
+        foreach (Contact contact in contacts)
         {
-            if (contacts[position].ContactName == name)
+            if (contact.ContactName == name)
             {
-                SnapsEngine.AddLineToTextDisplay("Added " + minutes + " minutes\n" +
-                    "to " + name);
-                contacts[position].ContactMinutesSpent = contacts[position].ContactMinutesSpent + minutes;
-                foundAContact = true;
-                break;
+                foundContact = true;
+                int minutes = SnapsEngine.ReadInteger("Enter contact minutes");
+
+                while (minutes <= 0)                     
+                    {
+                        minutes = SnapsEngine.ReadInteger("You entered an invalid number. \nPlease enter a number greater than zero.");
+                    }
+
+                SnapsEngine.ClearTextDisplay();
+
+                for (int position = 0; position < contacts.Length; position = position + 1)
+                {
+                    if (contacts[position].ContactName == name)
+                    {
+                        SnapsEngine.AddLineToTextDisplay("Added " + minutes + " minutes\n" +
+                            "to " + name);
+                        contacts[position].ContactMinutesSpent = contacts[position].ContactMinutesSpent + minutes;
+                        SnapsEngine.WaitForButton("Continue");
+                        SnapsEngine.ClearTextDisplay();
+                    }
+                }
             }
         }
 
-        if (!foundAContact)
+        if (foundContact == false)
+        {
             SnapsEngine.AddLineToTextDisplay("Contact not found");
-
-        SnapsEngine.WaitForButton("Continue");
-        SnapsEngine.ClearTextDisplay();
+            SnapsEngine.WaitForButton("Continue");
+            SnapsEngine.ClearTextDisplay();
+        }
     }
 
     void displaySummary()
@@ -172,7 +202,7 @@ class Ch10_04_TimeTracker
 
 
         // Remove this statement before you sell the program 
-        makeTestData();
+        //makeTestData();
 
         while (true)
         {
